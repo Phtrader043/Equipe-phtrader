@@ -1,6 +1,6 @@
 import cohere
 
-co = cohere.Client("0zIapnzQSu4BXmPPkFbL4A0E4HZG9wM6IotodQOn")
+co = cohere.Client("6UJatkMXui5NU3oNaoSAgAAUDVrI7Va7VddNbFUo")
 
 def analisar_tendencia(dados):
     prompt = (
