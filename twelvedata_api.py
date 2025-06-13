@@ -1,7 +1,7 @@
 
 import requests
 
-API_KEY = "cd52d4f5c5924063a7af0070445d2a3b"
+API_KEY = "08665d12c4394cafad7e9a36f1bf3ba8"
 
 def consultar_twelvedata(symbol):
     url = f"https://api.twelvedata.com/time_series?symbol={symbol}&interval=1min&apikey={API_KEY}"
