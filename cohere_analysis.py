@@ -1,48 +1,45 @@
-
 import cohere
 
 co = cohere.Client("0zIapnzQSu4BXmPPkFbL4A0E4HZG9wM6IotodQOn")
 
 def analisar_tendencia(dados):
-    texto = f"""Você é um analista financeiro experiente.
-Aqui estão os dados mais recentes de um ativo de criptomoeda ou Forex:
-
-Ativo: {dados['ativo']}
-Preço atual: {dados['preco']}
-Volume: {dados['volume']}
-Variação percentual: {dados['variacao']}%
-RSI (14): {dados['rsi']}
-EMA (10): {dados['ema']}
-MACD: {dados['macd']}
-Histograma MACD: {dados['macd_hist']}
-
-Com base nesses dados e indicadores técnicos, responda:
-1. Você recomenda COMPRA ou VENDA?
-2. Qual o nível de confiança dessa recomendação em porcentagem? (ex: 95%)
-Responda diretamente, exemplo: "Compra - Confiança: 93%""""
+    prompt = (
+        f"Você é um analista financeiro experiente.\n"
+        f"Aqui estão os dados mais recentes de um ativo de criptomoeda ou Forex:\n\n"
+        f"Ativo: {dados['ativo']}\n"
+        f"Preço atual: {dados['preco']}\n"
+        f"Volume: {dados['volume']}\n"
+        f"Variação percentual: {dados['variacao']}%\n"
+        f"RSI (14): {dados['rsi']}\n"
+        f"EMA (10): {dados['ema']}\n"
+        f"MACD: {dados['macd']}\n"
+        f"Histograma MACD: {dados['macd_hist']}\n\n"
+        f"Com base nesses dados e indicadores técnicos, responda:\n"
+        f"1. Você recomenda COMPRA ou VENDA?\n"
+        f"2. Qual o nível de confiança dessa recomendação em porcentagem? (ex: 95%)\n"
+        f"Responda diretamente, exemplo: 'Compra - Confiança: 93%'"
+    )
 
     resposta = co.generate(
-        prompt=texto,
+        prompt=prompt,
         model="command",
         max_tokens=60,
         temperature=0.3
     )
 
-    resultado = resposta.generations[0].text.strip().lower()
-    if "compra" in resultado:
+    texto = resposta.generations[0].text.strip().lower()
+
+    if "compra" in texto:
         tipo = "Compra"
-    elif "venda" in resultado:
+    elif "venda" in texto:
         tipo = "Venda"
     else:
         tipo = "Indefinido"
 
-    confianca = "".join([c for c in resultado if c.isdigit()])
-    if confianca:
-        confianca = int(confianca)
-        if confianca > 100:
-            confianca = 100
-    else:
-        confianca = 50
+    numeros = [int(s) for s in texto.split() if s.isdigit()]
+    confianca = max(numeros) if numeros else 50
+    if confianca > 100:
+        confianca = 100
 
     return {
         "tipo": tipo,
